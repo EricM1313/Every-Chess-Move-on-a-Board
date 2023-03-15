@@ -26,26 +26,7 @@ class Piece:
   def myfunc(self):
     print("Hello my name is " + self.name)
     
-'''
-Classification:
 
-1,1111,111,111
-1,2333,444,555
-
-1:
-W = 1
-B= 0
-2:
-Pawn = 0
-Big Piece = 1
-3:
-num 0-7, indicating position left to right
-4:
-x-position 0-7, left to right
-4:
-y-position 0-7, left to right
-
-'''
   
 wp1 = Piece('W','p1',1,2)
 wp2 = Piece('W','p2',2,2)
