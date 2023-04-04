@@ -1,19 +1,16 @@
 class Piece:
-
   def __init__(self, color, type, x, y):
     self.type = type
     self.color = color
     self.x = x
     self.y = y
-
   def move(self):
     for i in range(9):
       if self.type == "p" + str(i):
         return pawn_move(self.x, self.y)
         break
-
     if type == "r1" or self.type == "r2":
-      return rook_move(self.x, self.y)
+        return rook_move(self.x, self.y)
     if self.type == "n1" or self.type == "n2":
       return knight_move(self.x, self.y)
     if self.type == "b1" or self.type == "b2":
@@ -22,12 +19,9 @@ class Piece:
       return queen_move(self.x, self.y)
     if self.type == "k":
       return king_move(self.x, self.y)
-
   def myfunc(self):
     print("Hello my name is " + self.name)
     
-
-  
 wp1 = Piece('W','p1',1,2)
 wp2 = Piece('W','p2',2,2)
 wp3 = Piece('W','p3',3,2)
@@ -40,9 +34,9 @@ wr1 = Piece('W','r1',1,1)
 wr2 = Piece('W','r2',8,1)
 wb1 = Piece('W','b1',3,1)
 wb2 = Piece('W','b2',6,1)
-wn1 = Piece('W','n1',5,4)
-wn2 = Piece('W','n2',7,1)
-wk = Piece('W','k',5,1)
+wn1 = Piece('W','n1',2,1)
+wn2 = Piece('W','n2',5,2)
+wk = Piece('W','k',5,3)
 wq = Piece('W','q',4,1)
 
 bp1 = Piece('B','p1',1,7)
@@ -57,29 +51,21 @@ br1 = Piece('B','r1',1,8)
 br2 = Piece('B','r2',8,8)
 bb1 = Piece('B','b1',3,8)
 bb2 = Piece('B','b2',6,8)
-bn1 = Piece('B','n1',2,8)
+bn1 = Piece('B','n1',3,4)
 bn2 = Piece('B','n2',7,8)
 bk = Piece('B','k',5,8)
-bq = Piece('B','q',5,6)
-
-
+bq = Piece('B','q',1,3)
 
 grid = [ 
-  [wr1, None, wb1, wq,  wk,  wb2, wn2, wr2],
-  [wp1, wp2, wp3, wp4, None, wp6, wp7, wp8],
-  [None,None,None,wp5,None,None,None,None],
-  [None,None,None,None,wn1,None,None,None],
+  [wr1, wn1, wb1, wq,  None,  wb2, None, wr2],
+  [wp1, wp2, wp3, wp4, wn2, wp6, wp7, wp8],
+  [bq,None,None,wp5,wk,None,None,None],
+  [None,None,bn1,None,None,None,None,None],
   [None,None,None,None,None,None,None,None],
-  [None,None,None,None,bq,None,None,None],
+  [None,None,None,None,None,None,None,None],
   [bp1, bp2, bp3, bp4, bp5, bp6, bp7, bp8],
-  [br1, bn1, bb1, None,  bk,  bb2, bn2, br2]
+  [br1, None, bb1, None,  bk,  bb2, bn2, br2]
        ]
-
-
-
-
-
-
 
 def rook_move(x,y):
     
@@ -143,8 +129,6 @@ def rook_move(x,y):
         return None
 
     return(moves)
-
-
 
 def bishop_move(x,y):
     moves = []
@@ -333,14 +317,15 @@ def knight_move(x,y):
     if moves == []:
         return None 
     remove_moves = []
-    if grid[y-1][x-1].color == 'W':
+    if grid[y][x].color == 'W':
+        
 
         for move in moves:
-            grid[move[1]-1][move[0]-1] = grid[y-1][x-1]
-            grid[y-1][x-1] = None
+            grid[move[1]-1][move[0]-1] = grid[y][x]
+            grid[y][x] = None
             if king_in_check(grid):
                 remove_moves.append(move)
-            grid[y-1][x-1] = grid[move[1]-1][move[0]-1]
+            grid[y][x] = grid[move[1]-1][move[0]-1]
             grid[move[1]-1][move[0]-1] = None
         moves = [i for i in moves if i not in remove_moves]
     
@@ -349,6 +334,7 @@ def knight_move(x,y):
 
     if moves == []:
         return None
+
     return(moves)
 
 def pawn_move(x,y):
@@ -358,7 +344,7 @@ def pawn_move(x,y):
     return_moves = []
     if(y == 1):
       newGridPos_Y = 2 + y
-      if grid[newGridPos_Y][x] == None:
+      if grid[newGridPos_Y][x] == None and grid[newGridPos_Y-1][x] == None :
         return_moves.append([x+1,newGridPos_Y+1])
   #for pawn moving forward 2
   
@@ -380,24 +366,25 @@ def pawn_move(x,y):
     if return_moves == []:
         return None 
     remove_moves = []
-    if grid[y-1][x-1]!= None and grid[y-1][x-1].color == 'W':
+    if grid[y][x].color == 'W':
+        
 
         for move in return_moves:
-            grid[move[1]-1][move[0]-1] = grid[y-1][x-1]
-            grid[y-1][x-1] = None
+            grid[move[1]-1][move[0]-1] = grid[y][x]
+            grid[y][x] = None
             if king_in_check(grid):
                 remove_moves.append(move)
-            grid[y-1][x-1] = grid[move[1]-1][move[0]-1]
+            grid[y][x] = grid[move[1]-1][move[0]-1]
             grid[move[1]-1][move[0]-1] = None
-        reutrn_moves = [i for i in return_moves if i not in remove_moves]
+        return_moves = [i for i in return_moves if i not in remove_moves]
     
 
     
 
     if return_moves == []:
         return None
-    return(return_moves)
 
+    return(return_moves)
 
 def king_in_check(grid):
     possible_moves = []
@@ -411,10 +398,6 @@ def king_in_check(grid):
             if [wk.x, wk.y] in move_list:
                 return True
     return False
-
-
-
-
 
 def find_white_pieces_sorted(grid):
     pawns = []
@@ -441,7 +424,6 @@ def find_white_pieces_sorted(grid):
                         queen.append([s.type,s.x,s.y])
                     
     return [pawns,rooks,bishops,knights,king,queen]
-#print(find_white_pieces_sorted(grid))
 
 def everyMovePossible(grid):
     ret = []
@@ -451,30 +433,120 @@ def everyMovePossible(grid):
         ret.append([piece[0],rook_move(piece[1],piece[2])])
     for piece in find_white_pieces_sorted(grid)[2]:
         ret.append([piece[0],bishop_move(piece[1],piece[2])])
-    #for piece in find_white_pieces_sorted(grid)[3]:
-        #ret.append([piece[0],knight_move(piece[1],piece[2])])
+    for piece in find_white_pieces_sorted(grid)[3]:
+        ret.append([piece[0],knight_move(piece[1],piece[2])])
     for piece in find_white_pieces_sorted(grid)[4]:
         ret.append([piece[0],king_move(piece[1],piece[2])])
     for piece in find_white_pieces_sorted(grid)[5]:
         ret.append([piece[0],queen_move(piece[1],piece[2])])
     
     return ret
-
-print(everyMovePossible(grid))
             
-  
-
-
-
-               
-
-
-
-
-
+def everyMove3dArray(grid):
+    moveList = everyMovePossible(grid)
+    ret = []
+    for piece in moveList:
+        if piece[1] != None:
+            for m in piece[1]:
+                newGrid = grid.copy()
+                if piece[0][0] == 'p':
+                    if piece[0][1] == "1":
+                        newGrid[wp1.y-1][wp1.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p1",m[0],m[1])
+                        ret.append(newGrid)
+                    if piece[0][1] == "2":
+                        newGrid[wp2.y-1][wp2.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p2",m[0],m[1])
+                        ret.append(newGrid)
+                    if piece[0][1] == "3":
+                        newGrid[wp3.y-1][wp3.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p3",m[0],m[1])
+                        ret.append(newGrid)
+                    if piece[0][1] == "4":
+                        newGrid[wp4.y-1][wp4.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p4",m[0],m[1])
+                        ret.append(newGrid)
+                    if piece[0][1] == "5":
+                        newGrid[wp5.y-1][wp5.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p5",m[0],m[1])
+                        ret.append(newGrid)
+                    if piece[0][1] == "6":
+                        newGrid[wp6.y-1][wp6.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p6",m[0],m[1])
+                        ret.append(newGrid)
+                    if piece[0][1] == "7":
+                        newGrid[wp7.y-1][wp7.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p7",m[0],m[1])
+                        ret.append(newGrid)
+                    if piece[0][1] == "8":
+                        newGrid[wp8.y-1][wp8.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","p8",m[0],m[1])
+                        ret.append(newGrid)
+                if piece[0][0] == "r":
+                    if piece[0][1] == "1":
+                        newGrid[wr1.y-1][wr1.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","r1",m[0],m[1])
+                        ret.append(newGrid)
+                    else:
+                        newGrid[wr2.y-1][wr2.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","r2",m[0],m[1])
+                        ret.append(newGrid)
+                if piece[0][0] == "b":
+                    if piece[0][1] == "1":
+                        newGrid[wb1.y-1][wb1.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","b1",m[0],m[1])
+                        ret.append(newGrid)
+                    else:
+                        newGrid[wb2.y-1][wb2.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","b2",m[0],m[1])
+                        ret.append(newGrid)
+                if piece[0][0] == "n":
+                    if piece[0][1] == "1":
+                        newGrid[wn1.y-1][wn1.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","n1",m[0],m[1])
+                        ret.append(newGrid)
+                    else:
+                        newGrid[wn2.y-1][wn2.x-1] = None
+                        newGrid[m[1]-1][m[0]-1] = Piece("W","n2",m[0],m[1])
+                        ret.append(newGrid)
+                if piece[0][0] == "k":
+                    newGrid[wk.y-1][wk.x-1] = None
+                    newGrid[m[1]-1][m[0]-1] = Piece("W","k",m[0],m[1])
+                    ret.append(newGrid)
+                if piece[0][0] == "q":
+                    newGrid[wq.y-1][wq.x-1] = None
+                    newGrid[m[1]-1][m[0]-1] =Piece("W","q",m[0],m[1])
+                    ret.append(newGrid)
+    return ret
  
+def makePrettyGrid(g):
+    retg = [ 
+  [None, None, None, None,  None,  None, None, None],
+  [None, None, None, None, None, None, None, None],
+  [None,None,None,None,None,None,None,None],
+  [None,None,None,None,None,None,None,None],
+  [None,None,None,None,None,None,None,None],
+  [None,None,None,None,None,None,None,None],
+  [None, None, None, None, None, None, None, None],
+  [None, None, None, None,  None,  None, None, None]
+       ]
+    for y in range(0,8):
+        for x in range(0,8):
+            if g[y][x]!= None:
+                #print(g)
+                if type(g[y][x]) == str:
+                    print(g)
+                
+                retg[y][x] = g[y][x].color + g[y][x].type
+    return retg
+
+def makePretty(g):
+    ret = []
+    allGrids = everyMove3dArray(g)
+    for grd in allGrids:
+        print((grd))
+        ret.append(makePrettyGrid(grd))
+    return ret
 
 
 
-
-    
