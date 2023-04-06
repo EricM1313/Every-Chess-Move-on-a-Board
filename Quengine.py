@@ -26,7 +26,7 @@ wp1 = Piece('W','p1',1,2)
 wp2 = Piece('W','p2',2,2)
 wp3 = Piece('W','p3',3,2)
 wp4 = Piece('W','p4',4,2)
-wp5 = Piece('W','p5',4,3)
+wp5 = Piece('W','p5',5,2)
 wp6 = Piece('W','p6',6,2)
 wp7 = Piece('W','p7',7,2)
 wp8 = Piece('W','p8',8,2)
@@ -35,8 +35,8 @@ wr2 = Piece('W','r2',8,1)
 wb1 = Piece('W','b1',3,1)
 wb2 = Piece('W','b2',6,1)
 wn1 = Piece('W','n1',2,1)
-wn2 = Piece('W','n2',5,2)
-wk = Piece('W','k',5,3)
+wn2 = Piece('W','n2',7,1)
+wk = Piece('W','k',5,1)
 wq = Piece('W','q',4,1)
 
 bp1 = Piece('B','p1',1,7)
@@ -51,20 +51,20 @@ br1 = Piece('B','r1',1,8)
 br2 = Piece('B','r2',8,8)
 bb1 = Piece('B','b1',3,8)
 bb2 = Piece('B','b2',6,8)
-bn1 = Piece('B','n1',3,4)
+bn1 = Piece('B','n1',2,8)
 bn2 = Piece('B','n2',7,8)
 bk = Piece('B','k',5,8)
-bq = Piece('B','q',1,3)
+bq = Piece('B','q',4,8)
 
 grid = [ 
-  [wr1, wn1, wb1, wq,  None,  wb2, None, wr2],
-  [wp1, wp2, wp3, wp4, wn2, wp6, wp7, wp8],
-  [bq,None,None,wp5,wk,None,None,None],
-  [None,None,bn1,None,None,None,None,None],
+  [wr1, wn1, wb1, wq,  wk,  wb2, wn2, wr2],
+  [wp1, wp2, wp3, wp4, wp5, wp6, wp7, wp8],
+  [None,None,None,None,None,None,None,None],
+  [None,None,None,None,None,None,None,None],
   [None,None,None,None,None,None,None,None],
   [None,None,None,None,None,None,None,None],
   [bp1, bp2, bp3, bp4, bp5, bp6, bp7, bp8],
-  [br1, None, bb1, None,  bk,  bb2, bn2, br2]
+  [br1, bn1, bb1, bq,  bk,  bb2, bn2, br2]
        ]
 
 def rook_move(x,y):
@@ -425,6 +425,23 @@ def find_white_pieces_sorted(grid):
                     
     return [pawns,rooks,bishops,knights,king,queen]
 
+def gridCopy(grid):
+    retgrid = [ 
+  [None, None, None, None,  None,  None, None, None],
+  [None, None, None, None, None, None, None, None],
+  [None,None,None,None,None,None,None,None],
+  [None,None,None,None,None,None,None,None],
+  [None,None,None,None,None,None,None,None],
+  [None,None,None,None,None,None,None,None],
+  [None, None, None, None, None, None, None, None],
+  [None, None, None, None,  None,  None, None, None]
+       ]
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] != None:
+                retgrid[i][j] = Piece(grid[i][j].color,grid[i][j].type,grid[i][j].x,grid[i][j].y)
+    return retgrid   
+
 def everyMovePossible(grid):
     ret = []
     for piece in find_white_pieces_sorted(grid)[0]:
@@ -448,7 +465,7 @@ def everyMove3dArray(grid):
     for piece in moveList:
         if piece[1] != None:
             for m in piece[1]:
-                newGrid = grid.copy()
+                newGrid = gridCopy(grid)
                 if piece[0][0] == 'p':
                     if piece[0][1] == "1":
                         newGrid[wp1.y-1][wp1.x-1] = None
@@ -544,9 +561,27 @@ def makePretty(g):
     ret = []
     allGrids = everyMove3dArray(g)
     for grd in allGrids:
-        print((grd))
         ret.append(makePrettyGrid(grd))
     return ret
 
-
+def squishPretty(grid):
+    bigArr = makePretty(grid)
+    retg = [ 
+  [[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[]]
+       ]
+    for g in bigArr:
+        for i in range(8):
+            for j in range(8):
+                retg[j][i].append(g[j][i])
+    for i in range(8):
+        for j in range(8):
+            retg[i][j] = list(set(retg[i][j]))
+    return retg
 
