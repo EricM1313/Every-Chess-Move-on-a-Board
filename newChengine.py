@@ -1,16 +1,26 @@
+import random
 
+#BOARD####################################################
 board = [ 
-  ['wr1','wn1','br1','wq_','wk_','wb2',None ,'wr2'],
-  ['wp1','wp2','wp3',None ,'wp5','wp6','wp7','wp8'],
-  [None ,None ,None ,None ,'wb1','wn2',None ,None ],  
-  [None ,'bq_',None ,'wp4',None ,None ,None ,None ],
-  ['bp1',None ,None ,'bp4',None ,None ,None ,'bp8'],
-  [None ,None ,'bn1',None ,None ,'bn2',None ,None ],
-  [None ,'bp2','bp3',None ,'bp5','bp6','bp7',None ],
-  [None ,None ,'bb1',None ,'bk_','bb2',None ,'br2']
+  [None ,'br1',None ,None ,None ,None ,'wr2',None ],
+  [None ,None ,None ,None ,None ,None ,'wp7','wp8'],
+  [None ,None ,'wp3',None ,'wk_',None ,None ,None ],  
+  [None ,'bp3',None ,None ,None ,'bp7',None ,None ],
+  ['bb2',None ,None ,None ,None ,'bb1',None ,'bp8'],
+  [None ,None ,None ,None ,None ,'bk_',None ,None ],
+  [None ,None ,None ,None ,None ,'bp6',None ,None ],
+  [None ,None ,None ,'br2',None ,None ,None ,None ]
        ]
+##########################################################
 
-def rook_move(x,y,grid, black = False):
+
+#MOVES#####################################################
+
+def rook_move(x,y,grid,black = False,primary=True):
+    color = 'w'
+    if black:
+        color = 'b'
+
     if grid[y][x] == None or grid[y][x][1] != 'r':
         return 'error wrong piece'
     moves = []
@@ -53,19 +63,23 @@ def rook_move(x,y,grid, black = False):
                 break 
     if moves == []:
         return None 
-    if black == False:  
+    if primary:
         for move in moves:
             possibleGrid = gridCopy(grid)
             possibleGrid[y][x] = None
-            possibleGrid[move[1]][move[0]] = 'wrx'
-            if checkCheck(possibleGrid):
+            possibleGrid[move[1]][move[0]] = color + 'rx'
+            if checkCheck(possibleGrid,black):
                 illegal_moves.append(move)
     moves = [i for i in moves if i not in illegal_moves]
     if moves == []:
         return None
     return(moves)
 
-def bishop_move(x,y,grid,black = False):
+def bishop_move(x,y,grid,black = False,primary=True):
+    color = 'w'
+    if black:
+        color = 'b'
+
     if grid[y][x] == None or grid[y][x][1] != 'b':
         return 'error wrong piece'
     moves = []
@@ -108,19 +122,22 @@ def bishop_move(x,y,grid,black = False):
                 break
     if moves == []:
         return None 
-    if black == False:  
+    if primary:  
         for move in moves:
             possibleGrid = gridCopy(grid)
             possibleGrid[y][x] = None
-            possibleGrid[move[1]][move[0]] = 'wbx'
-            if checkCheck(possibleGrid):
+            possibleGrid[move[1]][move[0]] = color + 'bx'
+            if checkCheck(possibleGrid,black):
                 illegal_moves.append(move)
     moves = [i for i in moves if i not in illegal_moves]
     if moves == []:
         return None
     return(moves)
     
-def queen_move(x,y,grid, black = False):
+def queen_move(x,y,grid, black = False,primary=True):
+    color = 'w'
+    if black:
+        color = 'b'
     if grid[y][x] == None or grid[y][x][1] != 'q':
         return 'error wrong piece'
     moves = []
@@ -199,19 +216,22 @@ def queen_move(x,y,grid, black = False):
                 break
     if moves == []:
         return None 
-    if black == False:  
+    if primary:  
         for move in moves:
             possibleGrid = gridCopy(grid)
             possibleGrid[y][x] = None
-            possibleGrid[move[1]][move[0]] = 'wq_'
-            if checkCheck(possibleGrid):
+            possibleGrid[move[1]][move[0]] = color + 'q_'
+            if checkCheck(possibleGrid,black):
                 illegal_moves.append(move)
     moves = [i for i in moves if i not in illegal_moves]
     if moves == []:
         return None
     return(moves)
 
-def king_move(x,y,grid, black = False):
+def king_move(x,y,grid, black = False,primary=True):
+    color = 'w'
+    if black:
+        color = 'b'
     if grid[y][x] == None or grid[y][x][1] != 'k':
         return 'error wrong piece'
     moves = []
@@ -225,20 +245,23 @@ def king_move(x,y,grid, black = False):
                     moves.append([x+i,y+j])
     if moves == []:
         return None 
-    if black == False:  
+    if primary:  
         illegal_moves = []
         for move in moves:
             possibleGrid = gridCopy(grid)
             possibleGrid[y][x] = None
-            possibleGrid[move[1]][move[0]] = 'wk_'
-            if checkCheck(possibleGrid):
+            possibleGrid[move[1]][move[0]] = color + 'k_'
+            if checkCheck(possibleGrid,black):
                 illegal_moves.append(move)
     moves = [i for i in moves if i not in illegal_moves]
     if moves == []:
         return None
     return(moves)
 
-def knight_move(x,y,grid,black = False):
+def knight_move(x,y,grid,black = False,primary=True):
+    color = 'w'
+    if black:
+        color = 'b'    
     if grid[y][x] == None or grid[y][x][1] != 'n':
         return 'error wrong piece'
     possible_moves = [[2,1],[-1,2],[-2,-1],[1,-2],[1,2],[-2,1],[-1,-2],[2,-1]]
@@ -253,22 +276,28 @@ def knight_move(x,y,grid,black = False):
             moves.append([newGridPos_X,newGridPos_Y])
     if moves == []:
         return None 
-    if black == False:  
+    if primary:  
         illegal_moves = []
         for move in moves:
             possibleGrid = gridCopy(grid)
             possibleGrid[y][x] = None
-            possibleGrid[move[1]][move[0]] = 'wnx'
-            if checkCheck(possibleGrid):
+            possibleGrid[move[1]][move[0]] = color +'nx'
+            if checkCheck(possibleGrid,black):
                 illegal_moves.append(move)
     moves = [i for i in moves if i not in illegal_moves]
     if moves == []:
         return None
     return(moves)
 
-def pawn_move(x,y,grid,black = False):
+def pawn_move(x,y,grid,black = False,primary=True):
+    color = 'w'
+    if black:
+        color = 'b'    
     if grid[y][x] == None or grid[y][x][1] != 'p':
         return 'error wrong piece'
+    illegal_moves = []
+    
+
     if black:
         capture_moves = [[1, -1], [-1, -1]]
         moves = []
@@ -282,7 +311,7 @@ def pawn_move(x,y,grid,black = False):
             if grid[newGridPos_Y][x] == None:
                 moves.append([x,newGridPos_Y ])
 
-        for move in moves:
+        for move in capture_moves:
             newGridPos_X = move[0] + x
             newGridPos_Y = move[1] + y
 
@@ -292,8 +321,8 @@ def pawn_move(x,y,grid,black = False):
             if grid[newGridPos_Y][newGridPos_X]!= None and grid[newGridPos_Y][newGridPos_X][0] == 'w':
                 moves.append([newGridPos_X, newGridPos_Y])
         if moves == []:
-            return None 
-        return moves
+            return None
+
     else:
         capture_moves = [[1, 1], [-1, 1]]
         moves = []
@@ -316,55 +345,75 @@ def pawn_move(x,y,grid,black = False):
                 moves.append([newGridPos_X, newGridPos_Y])
     if moves == []:
         return None 
-    if black == False:  
+    
+    if primary:  
           for move in moves:
               possibleGrid = gridCopy(grid)
               possibleGrid[y][x] = None
-              possibleGrid[move[1]][move[0]] = 'wrx'
-              if checkCheck(possibleGrid):
+              possibleGrid[move[1]][move[0]] = color +'px'
+              if checkCheck(possibleGrid,black):
                   illegal_moves.append(move)
     moves = [i for i in moves if i not in illegal_moves]
     if moves == []:
         return None
     return(moves)
 
-def checkCheck(grid):
-    wkx = -1
-    wky = -1
+##########################################################
+
+
+#HELPERS##################################################
+
+def checkCheck(grid,black = False):
+
+    color = 'w'
+    if black:  
+        color = 'b'
+    kx = -1
+    ky = -1
+
     for i in range(8):
         for j in range(8):
             if grid[i][j] != None:
-                if grid[i][j][0] == 'w' and grid[i][j][1] == 'k':
-                    wkx, wky = j, i  
+                if grid[i][j][0] == color and grid[i][j][1] == 'k':
+                    kx, ky = j, i  
 
     possible_moves = []
     for i in range(8):
         for j in range(8):
-            if grid[i][j] != None and grid[i][j][0] == 'b':
+            if grid[i][j] != None and grid[i][j][0] != color:
                     if grid[i][j][1] == 'r':
-                        if rook_move(j,i,grid,True) != None:
-                            possible_moves.append(rook_move(j,i,grid,True))
+                        if rook_move(j,i,grid,not black,False) != None:
+                            possible_moves.append(rook_move(j,i,grid,not black,False))
                     if grid[i][j][1] == 'n':
-                        if knight_move(j,i,grid,True) != None:
-                            possible_moves.append(knight_move(j,i,grid,True))
+                        if knight_move(j,i,grid,not black,False) != None:
+                            possible_moves.append(knight_move(j,i,grid,not black,False))
                     if grid[i][j][1] == 'b':
-                        if bishop_move(j,i,grid,True) != None:
-                            possible_moves.append(bishop_move(j,i,grid,True))
+                        if bishop_move(j,i,grid,not black,False) != None:
+                            possible_moves.append(bishop_move(j,i,grid,not black,False))
                     if grid[i][j][1] == 'k':
-                        if king_move(j,i,grid,True) != None:
-                            possible_moves.append(king_move(j,i,grid,True))
+                        if king_move(j,i,grid,not black,False) != None:
+                            possible_moves.append(king_move(j,i,grid,not black,False))
                     if grid[i][j][1] == 'q':
-                        if queen_move(j,i,grid,True) != None:
-                            possible_moves.append(queen_move(j,i,grid,True))
+                        if queen_move(j,i,grid,not black,False) != None:
+                            possible_moves.append(queen_move(j,i,grid,not black,False))
                     if grid[i][j][1] == 'p':
-                        if pawn_move(j,i,grid,True) != None:
-                            possible_moves.append(pawn_move(j,i,grid,True))
+                        if pawn_move(j,i,grid,not black,False) != None:
+                            possible_moves.append(pawn_move(j,i,grid,not black,False))
     for move_list in possible_moves:
         if move_list != None:
-            if [wkx, wky] in move_list:
+            if [kx, ky] in move_list:
                 return True
 
     return False
+
+def checkMateCheck(grid,black=False):
+    if (len(everyLegalBoard(grid,black)) == 0):
+        if (checkCheck(grid,black)):
+            return 'checkmate'
+        else:
+            return 'stalemate'
+    return 'KeepPlaying'
+
 
 def gridCopy(grid):
     retgrid = [ 
@@ -383,55 +432,141 @@ def gridCopy(grid):
                 retgrid[i][j] = grid[i][j][0] + grid[i][j][1] + grid[i][j][2]
     return retgrid
 
-def everyLegalMove(grid):
+def everyLegalMove(grid,black = False):
+    color = 'w'
+    if black:  
+        color = 'b'
     moves = []
     for i in range(8):
         for j in range(8):
-            if grid[i][j] != None and grid[i][j][0] == 'w':
+            if grid[i][j] != None and grid[i][j][0] == color:
                 if grid[i][j][1] == 'r':
-                    if rook_move(j,i,grid) != None:
-                        for move in rook_move(j,i,grid):
-                            moves.append('r' + grid[i][j][2] +':' + str(move[0])+','+str(move[1]))
+                    if rook_move(j,i,grid,black) != None:
+                        for move in rook_move(j,i,grid,black):
+                            moves.append(color + 'r' + grid[i][j][2] +':' + str(move[0])+','+str(move[1]))
                 if grid[i][j][1] == 'n':
-                    if knight_move(j,i,grid) != None:
-                        for move in knight_move(j,i,grid):
-                            moves.append('n' + grid[i][j][2] +':' +str(move[0])+','+str(move[1]))
+                    if knight_move(j,i,grid,black) != None:
+                        for move in knight_move(j,i,grid,black):
+                            moves.append(color +'n' + grid[i][j][2] +':' +str(move[0])+','+str(move[1]))
                 if grid[i][j][1] == 'b':
-                    if bishop_move(j,i,grid) != None:  
-                        for move in bishop_move(j,i,grid):
-                            moves.append('b' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
+                    if bishop_move(j,i,grid,black) != None:  
+                        for move in bishop_move(j,i,grid,black):
+                            moves.append(color +'b' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
                 if grid[i][j][1] == 'k':
-                    if king_move(j,i,grid) != None:
-                        for move in king_move(j,i,grid):
-                            moves.append('k' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
+                    if king_move(j,i,grid,black) != None:
+                        for move in king_move(j,i,grid,black):
+                            moves.append(color +'k' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
                 if grid[i][j][1] == 'q':
-                    if queen_move(j,i,grid) != None:
-                        for move in queen_move(j,i,grid):
-                            moves.append('q' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
+                    if queen_move(j,i,grid,black) != None:
+                        for move in queen_move(j,i,grid,black):
+                            moves.append(color +'q' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
                 if grid[i][j][1] == 'p':
-                    if pawn_move(j,i,grid) != None:
-                        for move in pawn_move(j,i,grid):
-                            moves.append('p' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
+                    if pawn_move(j,i,grid,black) != None:
+                        for move in pawn_move(j,i,grid,black):
+                            moves.append(color +'p' + grid[i][j][2] +':'+ str(move[0])+','+str(move[1]))
     return moves
 
 def findPiece(piece,grid):
     for i in range(8):
         for j in range(8):
-            if grid[j][i] != None and grid[j][i][1:] == piece:
+            if grid[j][i] != None and grid[j][i] == piece:
                 return ([i,j])
     return None
 
-def moveToGridHelper(move,grid):
+def moveToGridHelper(move,grid,black=False):
     retg = gridCopy(grid)
-    retg[move[-1]][move[-3]] = move[:2]
-    retg[findPiece(move[:2])[1]][findPiece(move[:2])[0]] = None
+    retg[int(move[-1])][int(move[-3])] = move[:3]
+    retg[findPiece(move[:3],grid)[1]][findPiece(move[:3],grid)[0]] = None
     return retg
     
-def everyLegalBoard(grid):
+def everyLegalBoard(grid,black=False):
     ret = []
-    for move in everyLegalMove(grid):
+    for move in everyLegalMove(grid,black):
         ret.append(moveToGridHelper(move,grid))
     return ret
 
+def visualPrint(board):
+    print("      0      1      2      3      4      5      6      7")
 
-print(everyLegalBoard(board))
+    for row in range(8):
+        print(0 + row, "|", end=" ")
+        for col in range(8):
+            piece = board[row][col]
+            if piece is None:
+                print("    ", end=" | ")
+            else:
+                print(f" {piece}", end=" | " if len(piece) == 3 else "  | ")
+        print("\n   --------------------------------------------------------")
+
+def everyVisualBoard(grid, black=False):
+    for b in everyLegalBoard(grid,black):
+        (visualPrint(b))
+
+##########################################################
+
+
+#EVALUATION_FUNCTION######################################
+
+def evaluate(grid):
+    ret = 0
+    for i in range(8):
+        for j in range(8):
+            if grid[i][j] != None:
+                multi = 1
+                if (grid[i][j][0] == 'b'):
+                    multi = -1
+                if (grid[i][j][1] == 'p'):
+                    ret += multi
+                if (grid[i][j][1] == 'n'):
+                    ret += multi*3
+                if (grid[i][j][1] == 'b'):
+                    ret += multi*3
+                if (grid[i][j][1] == 'r'):
+                    ret += multi*5
+                if (grid[i][j][1] == 'q'):
+                    ret += multi*9
+    return ret
+    
+
+  
+##########################################################
+
+#MINIMAX##################################################
+
+def minimax(grid,depth,alpha,beta,black=False):
+    retg = []
+    if (depth == 0 or checkMateCheck(grid,black) != 'KeepPlaying'):
+        return evaluate(grid)
+    if (not black):
+        maxEval = -999
+        for g in everyLegalBoard(grid,False):
+            evalu = minimax(g,depth-1,alpha,beta,True)
+            if (evalu > maxEval):
+                retg = g
+            maxEval = max(evalu,maxEval)
+            alpha = max(alpha,evalu)
+            if (beta <= alpha):
+                break
+        if depth == 3:
+            visualPrint(retg)
+        return maxEval
+
+    else:
+        minEval = 999
+        for g in everyLegalBoard(grid,True):     
+            evalu = minimax(g,depth-1,alpha,beta,False)
+            minEval = min(minEval,evalu)
+            beta = min(beta, evalu)
+            if (beta <= alpha):
+                break
+        return minEval
+
+##########################################################
+
+#TESTING#################################################
+
+
+
+
+  
+##########################################################
